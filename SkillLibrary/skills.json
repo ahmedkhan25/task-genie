@@ -1,0 +1,7 @@
+[
+    {
+      "name": "exampleSkill",
+      "description": "This skill does something important.",
+      "code": "exampleSkill.ts"
+    }
+  ]

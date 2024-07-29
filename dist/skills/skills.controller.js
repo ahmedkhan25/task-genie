@@ -12,61 +12,61 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskController = void 0;
+exports.SkillController = void 0;
 const common_1 = require("@nestjs/common");
-const tasks_service_1 = require("./tasks.service");
-let TaskController = class TaskController {
-    constructor(taskService) {
-        this.taskService = taskService;
+const skills_service_1 = require("./skills.service");
+let SkillController = class SkillController {
+    constructor(skillService) {
+        this.skillService = skillService;
     }
-    getAllTasks() {
-        return this.taskService.getAllTasks();
+    getAllSkills() {
+        return this.skillService.getAllSkills();
     }
-    getTask(name) {
-        return this.taskService.getTask(name);
+    getSkill(name) {
+        return this.skillService.getSkill(name);
     }
-    addTask(task) {
-        return this.taskService.addTask(task);
+    addSkill(Skill) {
+        return this.skillService.addSkill(Skill);
     }
-    async executeTask(name) {
+    async executeSkill(name) {
         try {
-            await this.taskService.executeTask(name);
+            await this.skillService.executeSkill(name);
         }
         catch (error) {
-            throw new common_1.HttpException('Task execution failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('Skill execution failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };
-exports.TaskController = TaskController;
+exports.SkillController = SkillController;
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], TaskController.prototype, "getAllTasks", null);
+], SkillController.prototype, "getAllSkills", null);
 __decorate([
     (0, common_1.Get)(':name'),
     __param(0, (0, common_1.Param)('name')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], TaskController.prototype, "getTask", null);
+], SkillController.prototype, "getSkill", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], TaskController.prototype, "addTask", null);
+], SkillController.prototype, "addSkill", null);
 __decorate([
     (0, common_1.Post)(':name/execute'),
     __param(0, (0, common_1.Param)('name')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], TaskController.prototype, "executeTask", null);
-exports.TaskController = TaskController = __decorate([
-    (0, common_1.Controller)('tasks'),
-    __metadata("design:paramtypes", [tasks_service_1.TaskService])
-], TaskController);
-//# sourceMappingURL=tasks.controller.js.map
+], SkillController.prototype, "executeSkill", null);
+exports.SkillController = SkillController = __decorate([
+    (0, common_1.Controller)('Skills'),
+    __metadata("design:paramtypes", [skills_service_1.SkillService])
+], SkillController);
+//# sourceMappingURL=skills.controller.js.map

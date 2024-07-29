@@ -8,15 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskModule = void 0;
 const common_1 = require("@nestjs/common");
-const tasks_controller_1 = require("./tasks.controller");
-const tasks_service_1 = require("./tasks.service");
+const skills_controller_1 = require("./skills.controller");
+const skills_service_1 = require("./skills.service");
 let TaskModule = class TaskModule {
 };
 exports.TaskModule = TaskModule;
 exports.TaskModule = TaskModule = __decorate([
     (0, common_1.Module)({
-        controllers: [tasks_controller_1.TaskController],
-        providers: [tasks_service_1.TaskService],
+        controllers: [skills_controller_1.SkillController],
+        providers: [skills_service_1.SkillService],
     })
 ], TaskModule);
-//# sourceMappingURL=tasks.module.js.map
+//# sourceMappingURL=skills.module.js.map

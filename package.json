@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "postbuild": "npm run copy-task-library",
-    "copy-task-library": "copyfiles -u 1 TaskLibrary/**/* dist/TaskLibrary",
+    "postbuild": "npm run copy-skill-library",
+    "copy-skill-library": "copyfiles -u 1 SkillLibrary/**/* dist/SkillLibrary",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -36,6 +36,7 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
     "@types/supertest": "^6.0.0",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "copyfiles": "^2.4.1",
