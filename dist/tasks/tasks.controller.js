@@ -28,6 +28,14 @@ let TaskController = class TaskController {
     addTask(task) {
         return this.taskService.addTask(task);
     }
+    async executeTask(name) {
+        try {
+            await this.taskService.executeTask(name);
+        }
+        catch (error) {
+            throw new common_1.HttpException('Task execution failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.TaskController = TaskController;
 __decorate([
@@ -50,6 +58,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], TaskController.prototype, "addTask", null);
+__decorate([
+    (0, common_1.Post)(':name/execute'),
+    __param(0, (0, common_1.Param)('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TaskController.prototype, "executeTask", null);
 exports.TaskController = TaskController = __decorate([
     (0, common_1.Controller)('tasks'),
     __metadata("design:paramtypes", [tasks_service_1.TaskService])

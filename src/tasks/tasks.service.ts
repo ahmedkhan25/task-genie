@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-
-export interface Task {  // Export the Task interface
-  name: string;
-  description: string;
-  code: string;
-}
+import * as tsNode from 'ts-node';
+import { Task } from './tasks.interface';  // Assuming you have a Task interface
 
 @Injectable()
 export class TaskService {
   private tasksFilePath = path.join(__dirname, '../../TaskLibrary/tasks.json');
+
+  constructor() {
+    tsNode.register({
+      transpileOnly: true,
+      compilerOptions: {
+        module: 'commonjs'
+      }
+    });
+  }
 
   async getAllTasks(): Promise<Task[]> {
     const tasks = await this.readTasksFromFile();
@@ -27,6 +32,18 @@ export class TaskService {
     tasks.push(task);
     await this.writeTasksToFile(tasks);
     await this.writeTaskFiles(task);
+  }
+
+  async executeTask(name: string): Promise<void> {
+    console.log('trying task :', name);
+    try {
+      const taskPath = path.join(__dirname, `../../TaskLibrary/${name}.ts`);
+      const { exampleTask } = await import(taskPath);
+      exampleTask();
+    } catch (error) {
+      // Handle the error here
+      console.error('Error executing imported task:', error);
+    }
   }
 
   private async readTasksFromFile(): Promise<Task[]> {
