@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/taskGenie.jpeg" width="500" alt="Task Genie Logo" />
+  <img src="public/images/taskGenie.jpeg" width="700" alt="Task Genie Logo" />
 </p>
 
 # TaskGenie

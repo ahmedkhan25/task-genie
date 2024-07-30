@@ -4,7 +4,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Genie, TaskStatus } from '../genie.interface';
 import { genie } from '../genie';
-import { v4 as uuidv4 } from 'uuid';
+
 import { OpenAIService } from '../openai/openai.service';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class AgentService {
 
   async generateSkill(taskDescription: string, retryCount = 0): Promise<void> {
     if (retryCount === 0) {
-      genie.SessionID = uuidv4();
+      
       genie.CurrentActiveTask = taskDescription;
       genie.TaskStatus = TaskStatus.Active;
     }

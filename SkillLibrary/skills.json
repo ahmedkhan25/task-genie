@@ -33,5 +33,10 @@
     "name": "getStateCapitals",
     "description": "This function returns an array of state capitols",
     "code": "function getStateCapitals(): string[] {\n    const stateCapitals: string[] = ['Austin', 'Atlanta', 'Tallahassee', 'Sacramento', 'Denver'];\n    return stateCapitals;\n}"
+  },
+  {
+    "name": "getCatString",
+    "description": "This function returns a string that says 'this is a cat'.",
+    "code": "function getCatString(): string {\n    return 'this is a cat';\n}\n"
   }
 ]

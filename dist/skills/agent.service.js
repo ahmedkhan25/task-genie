@@ -15,7 +15,6 @@ const fs_1 = require("fs");
 const path = require("path");
 const genie_interface_1 = require("../genie.interface");
 const genie_1 = require("../genie");
-const uuid_1 = require("uuid");
 const openai_service_1 = require("../openai/openai.service");
 let AgentService = class AgentService {
     constructor(openAIService) {
@@ -34,7 +33,6 @@ let AgentService = class AgentService {
     }
     async generateSkill(taskDescription, retryCount = 0) {
         if (retryCount === 0) {
-            genie_1.genie.SessionID = (0, uuid_1.v4)();
             genie_1.genie.CurrentActiveTask = taskDescription;
             genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Active;
         }
