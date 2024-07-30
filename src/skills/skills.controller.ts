@@ -1,10 +1,14 @@
-import { Controller, Get, Param, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
-import { SkillService } from './skills.service'; 
-import { Skill } from './skills.interface';  
+import { Controller, Get, Post, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { SkillService } from './skills.service';
+import { AgentService } from './agent.service';
+import { Skill } from './skills.interface';
 
-@Controller('Skills')
+@Controller('skills')
 export class SkillController {
-  constructor(private readonly skillService: SkillService) {}
+  constructor(
+    private readonly skillService: SkillService,
+    private readonly agentService: AgentService
+  ) {}
 
   @Get()
   getAllSkills(): Promise<Skill[]> {
@@ -19,6 +23,15 @@ export class SkillController {
   @Post()
   addSkill(@Body() Skill: Skill): Promise<void> {
     return this.skillService.addSkill(Skill);
+  }
+
+  @Post('generate')
+  async generateSkill(@Body('taskDescription') taskDescription: string): Promise<void> {
+    try {
+      await this.agentService.generateSkill(taskDescription);
+    } catch (error) {
+      throw new HttpException('Skill generation failed', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Post(':name/execute')

@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SkillController = void 0;
 const common_1 = require("@nestjs/common");
 const skills_service_1 = require("./skills.service");
+const agent_service_1 = require("./agent.service");
 let SkillController = class SkillController {
-    constructor(skillService) {
+    constructor(skillService, agentService) {
         this.skillService = skillService;
+        this.agentService = agentService;
     }
     getAllSkills() {
         return this.skillService.getAllSkills();
@@ -27,6 +29,14 @@ let SkillController = class SkillController {
     }
     addSkill(Skill) {
         return this.skillService.addSkill(Skill);
+    }
+    async generateSkill(taskDescription) {
+        try {
+            await this.agentService.generateSkill(taskDescription);
+        }
+        catch (error) {
+            throw new common_1.HttpException('Skill generation failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async executeSkill(name) {
         try {
@@ -59,6 +69,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SkillController.prototype, "addSkill", null);
 __decorate([
+    (0, common_1.Post)('generate'),
+    __param(0, (0, common_1.Body)('taskDescription')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SkillController.prototype, "generateSkill", null);
+__decorate([
     (0, common_1.Post)(':name/execute'),
     __param(0, (0, common_1.Param)('name')),
     __metadata("design:type", Function),
@@ -66,7 +83,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SkillController.prototype, "executeSkill", null);
 exports.SkillController = SkillController = __decorate([
-    (0, common_1.Controller)('Skills'),
-    __metadata("design:paramtypes", [skills_service_1.SkillService])
+    (0, common_1.Controller)('skills'),
+    __metadata("design:paramtypes", [skills_service_1.SkillService,
+        agent_service_1.AgentService])
 ], SkillController);
 //# sourceMappingURL=skills.controller.js.map

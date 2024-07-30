@@ -6,17 +6,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskModule = void 0;
+exports.SkillsModule = void 0;
 const common_1 = require("@nestjs/common");
 const skills_controller_1 = require("./skills.controller");
 const skills_service_1 = require("./skills.service");
-let TaskModule = class TaskModule {
+const agent_service_1 = require("./agent.service");
+const openai_service_1 = require("../openai/openai.service");
+const axios_1 = require("@nestjs/axios");
+let SkillsModule = class SkillsModule {
 };
-exports.TaskModule = TaskModule;
-exports.TaskModule = TaskModule = __decorate([
+exports.SkillsModule = SkillsModule;
+exports.SkillsModule = SkillsModule = __decorate([
     (0, common_1.Module)({
+        imports: [axios_1.HttpModule],
         controllers: [skills_controller_1.SkillController],
-        providers: [skills_service_1.SkillService],
+        providers: [skills_service_1.SkillService, agent_service_1.AgentService, openai_service_1.OpenAIService],
     })
-], TaskModule);
+], SkillsModule);
 //# sourceMappingURL=skills.module.js.map
