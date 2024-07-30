@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const fs_1 = require("fs");
 const path = require("path");
 const tsNode = require("ts-node");
+const ts = require("typescript");
 let SkillService = class SkillService {
     constructor() {
         this.skillsFilePath = path.join(__dirname, '../../SkillLibrary/skills.json');
@@ -39,14 +40,27 @@ let SkillService = class SkillService {
         await this.writeSkillFile(skill);
     }
     async executeSkill(name) {
-        console.log('trying skill :', name);
+        console.log('Trying to execute skill:', name);
         try {
             const skillPath = path.join(__dirname, `../../SkillLibrary/${name}.ts`);
-            const { exampleSkill } = await Promise.resolve(`${skillPath}`).then(s => require(s));
-            exampleSkill();
+            console.log('Skill path:', skillPath);
+            const fileContent = await fs_1.promises.readFile(skillPath, 'utf8');
+            const result = ts.transpileModule(fileContent, {
+                compilerOptions: { module: ts.ModuleKind.CommonJS }
+            });
+            const skillFunction = new Function(`return ${result.outputText}`)();
+            if (typeof skillFunction === 'function') {
+                const executionResult = skillFunction();
+                console.log(`Skill ${name} executed successfully.`);
+                return executionResult;
+            }
+            else {
+                throw new Error('The skill file does not contain a valid function');
+            }
         }
         catch (error) {
-            console.error('Error executing imported skill:', error);
+            console.error('Error executing skill:', error);
+            throw new Error(`Failed to execute skill ${name}: ${error.message}`);
         }
     }
     async readSkillsFromFile() {
@@ -58,9 +72,7 @@ let SkillService = class SkillService {
     }
     async writeSkillFile(skill) {
         const skillTsPath = path.join(__dirname, `../../SkillLibrary/${skill.name}.ts`);
-        const skillTxtPath = path.join(__dirname, `../../SkillLibrary/${skill.name}.txt`);
         await fs_1.promises.writeFile(skillTsPath, skill.code, 'utf8');
-        await fs_1.promises.writeFile(skillTxtPath, skill.description, 'utf8');
     }
 };
 exports.SkillService = SkillService;

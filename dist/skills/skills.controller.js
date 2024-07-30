@@ -57,10 +57,14 @@ let SkillController = class SkillController {
     }
     async executeSkill(name) {
         try {
-            await this.skillService.executeSkill(name);
+            const result = await this.skillService.executeSkill(name);
+            return { result };
         }
         catch (error) {
-            throw new common_1.HttpException('Skill execution failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            if (error.message.includes('not found')) {
+                throw new common_1.HttpException('Skill not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            throw new common_1.HttpException(`Skill execution failed: ${error.message}`, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };
@@ -109,8 +113,20 @@ __decorate([
 __decorate([
     (0, common_1.Post)(':name/execute'),
     (0, swagger_1.ApiOperation)({ summary: 'Execute a skill' }),
-    (0, swagger_1.ApiParam)({ name: 'name', type: 'string' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'The skill has been successfully executed.' }),
+    (0, swagger_1.ApiParam)({ name: 'name', type: 'string', description: 'The name of the skill to execute' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The skill has been successfully executed.',
+        schema: {
+            type: 'object',
+            properties: {
+                result: {
+                    type: 'object',
+                    description: 'The result of the skill execution. The type varies depending on the skill.',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Skill not found.' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Skill execution failed.' }),
     __param(0, (0, common_1.Param)('name')),

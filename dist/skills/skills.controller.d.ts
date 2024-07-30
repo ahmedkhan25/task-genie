@@ -14,5 +14,7 @@ export declare class SkillController {
     getSkill(name: string): Promise<Skill | undefined>;
     addSkill(skill: Skill): Promise<void>;
     generateSkill(taskDescription: string): Promise<void>;
-    executeSkill(name: string): Promise<void>;
+    executeSkill(name: string): Promise<{
+        result: any;
+    }>;
 }

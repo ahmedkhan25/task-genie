@@ -66,15 +66,32 @@ export class SkillController {
 
   @Post(':name/execute')
   @ApiOperation({ summary: 'Execute a skill' })
-  @ApiParam({ name: 'name', type: 'string' })
-  @ApiResponse({ status: 200, description: 'The skill has been successfully executed.' })
+  @ApiParam({ name: 'name', type: 'string', description: 'The name of the skill to execute' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'The skill has been successfully executed.',
+    schema: {
+      type: 'object',
+      properties: {
+        result: {
+          type: 'object',
+          description: 'The result of the skill execution. The type varies depending on the skill.',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 404, description: 'Skill not found.' })
   @ApiResponse({ status: 500, description: 'Skill execution failed.' })
-  async executeSkill(@Param('name') name: string): Promise<void> {
+  async executeSkill(@Param('name') name: string): Promise<{ result: any }> {
     try {
-      await this.skillService.executeSkill(name);
+      const result = await this.skillService.executeSkill(name);
+      return { result };
     } catch (error) {
-      throw new HttpException('Skill execution failed', HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error.message.includes('not found')) {
+        throw new HttpException('Skill not found', HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException(`Skill execution failed: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 }

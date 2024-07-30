@@ -1,10 +1,5 @@
 [
   {
-    "name": "exampleSkill",
-    "description": "This skill does something important.",
-    "code": "exampleSkill.ts"
-  },
-  {
     "name": "addTwoNumbers",
     "description": "Generate a TypeScript function to accomplish the following task: Create a TypeScript function that takes two numbers as input and returns their sum.",
     "code": "function addTwoNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}\n"

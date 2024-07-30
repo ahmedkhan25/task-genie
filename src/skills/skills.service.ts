@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as tsNode from 'ts-node';
+import * as ts from 'typescript';
 import { Skill } from './skills.interface'; 
 import { genie } from '../genie';
 
@@ -31,19 +32,37 @@ export class SkillService {
   async addSkill(skill: Skill): Promise<void> {
     const skills = await this.readSkillsFromFile();
     skills.push(skill);
+    //write to json file:
     await this.writeSkillsToFile(skills);
+    //write to .ts file:
     await this.writeSkillFile(skill);
   }
 
-  async executeSkill(name: string): Promise<void> {
-    console.log('trying skill :', name);
+
+   async executeSkill(name: string): Promise<any> {
+    console.log('Trying to execute skill:', name);
     try {
       const skillPath = path.join(__dirname, `../../SkillLibrary/${name}.ts`);
-      const { exampleSkill } = await import(skillPath);
-      exampleSkill();
+      console.log('Skill path:', skillPath);
+      
+      const fileContent = await fs.readFile(skillPath, 'utf8');
+      
+      const result = ts.transpileModule(fileContent, {
+        compilerOptions: { module: ts.ModuleKind.CommonJS }
+      });
+      
+      const skillFunction = new Function(`return ${result.outputText}`)();
+      
+      if (typeof skillFunction === 'function') {
+        const executionResult = skillFunction();
+        console.log(`Skill ${name} executed successfully.`);
+        return executionResult;
+      } else {
+        throw new Error('The skill file does not contain a valid function');
+      }
     } catch (error) {
-      // Handle the error here
-      console.error('Error executing imported skill:', error);
+      console.error('Error executing skill:', error);
+      throw new Error(`Failed to execute skill ${name}: ${error.message}`);
     }
   }
 
@@ -58,9 +77,9 @@ export class SkillService {
 
   private async writeSkillFile(skill: Skill): Promise<void> {
     const skillTsPath = path.join(__dirname, `../../SkillLibrary/${skill.name}.ts`);
-    const skillTxtPath = path.join(__dirname, `../../SkillLibrary/${skill.name}.txt`);
+  
 
     await fs.writeFile(skillTsPath, skill.code, 'utf8');
-    await fs.writeFile(skillTxtPath, skill.description, 'utf8');
+   
   }
 }
