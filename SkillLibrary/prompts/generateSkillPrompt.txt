@@ -4,9 +4,8 @@ Follow these guidelines:
 1. The function should be written in TypeScript. Write everything in ONE FUNCTION
 2. Keep the function as short as possible while maintaining functionality.
 3. If sequential steps are required, they may be included in a single function.
-4. If many variables are needed, consider using the Command design pattern.
-6. Minimize cyclomatic complexity to reduce potential errors.
-7. Return only valid JSON of the array with a single object containing 3 attributes as defined, without any additional text, spaces, or punctuation.
+4. Return only valid JSON of the array with a single object containing 3 attributes as defined, without any additional text, spaces, or punctuation.
+5. VERY IMPORTANT: DO NOT RETURN ANYTHING BUT THE JSON OBJECT - nothing else, no commentary or other content or comments -this is for a code parser!! 
 
 Generate a TypeScript function as defined to do the following {TASK DESCRIPTION}.
 

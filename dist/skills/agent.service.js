@@ -21,6 +21,7 @@ let AgentService = class AgentService {
     constructor(openAIService) {
         this.openAIService = openAIService;
         this.skillsFilePath = path.join(__dirname, '../../SkillLibrary/skills.json');
+        this.maxRetries = 4;
     }
     async loadPrompt() {
         try {
@@ -31,10 +32,12 @@ let AgentService = class AgentService {
             throw error;
         }
     }
-    async generateSkill(taskDescription) {
-        genie_1.genie.SessionID = (0, uuid_1.v4)();
-        genie_1.genie.CurrentActiveTask = taskDescription;
-        genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Active;
+    async generateSkill(taskDescription, retryCount = 0) {
+        if (retryCount === 0) {
+            genie_1.genie.SessionID = (0, uuid_1.v4)();
+            genie_1.genie.CurrentActiveTask = taskDescription;
+            genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Active;
+        }
         try {
             if (!this.basePrompt) {
                 await this.loadPrompt();
@@ -48,14 +51,21 @@ let AgentService = class AgentService {
             genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Completed;
         }
         catch (error) {
-            console.error('Error generating skill:', error);
-            genie_1.genie.Log.push(`Error generating skill: ${error.message}`);
-            genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Error;
-            throw error;
+            console.error(`Error generating skill (attempt ${retryCount + 1}):`, error);
+            genie_1.genie.Log.push(`Error generating skill (attempt ${retryCount + 1}): ${error.message}`);
+            if (retryCount < this.maxRetries) {
+                genie_1.genie.Log.push(`Retrying... (${retryCount + 1}/${this.maxRetries})`);
+                return this.generateSkill(taskDescription, retryCount + 1);
+            }
+            else {
+                genie_1.genie.TaskStatus = genie_interface_1.TaskStatus.Error;
+                throw new Error(`Failed to generate skill after ${this.maxRetries} attempts: ${error.message}`);
+            }
         }
     }
     parseSkillResponse(skillResponse) {
         try {
+            console.log('skillResponse from GPT is: ', skillResponse);
             const parsedResponse = JSON.parse(skillResponse);
             if (Array.isArray(parsedResponse) && parsedResponse.length > 0) {
                 const skillData = parsedResponse[0];
@@ -92,8 +102,16 @@ let AgentService = class AgentService {
         }
     }
     async readSkillsFromFile() {
-        const data = await fs_1.promises.readFile(this.skillsFilePath, 'utf8');
-        return JSON.parse(data);
+        try {
+            const data = await fs_1.promises.readFile(this.skillsFilePath, 'utf8');
+            return JSON.parse(data);
+        }
+        catch (error) {
+            if (error.code === 'ENOENT') {
+                return [];
+            }
+            throw error;
+        }
     }
     async writeSkillsToFile(skills) {
         await fs_1.promises.writeFile(this.skillsFilePath, JSON.stringify(skills, null, 2), 'utf8');

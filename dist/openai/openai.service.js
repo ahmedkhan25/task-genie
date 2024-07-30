@@ -42,7 +42,9 @@ let OpenAIService = class OpenAIService {
         };
         const data = {
             model: 'gpt-4',
-            messages: [{ role: 'user', content: genie.ActivePrompt }],
+            messages: [
+                { role: 'user', content: genie.ActivePrompt }
+            ]
         };
         try {
             const response = await axios_1.default.post(url, data, { headers });

@@ -13,5 +13,25 @@
     "name": "addNumbers",
     "description": "This function takes two numbers as input and returns their sum.",
     "code": "function addNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}"
+  },
+  {
+    "name": "multiplyNumbers",
+    "description": "This function takes two numbers as inputs and returns the product of the two numbers.",
+    "code": "function multiplyNumbers(num1: number, num2: number): number {\n    return num1 * num2;\n}"
+  },
+  {
+    "name": "divideNumbers",
+    "description": "This function takes two numbers as parameters, divides first number by the second and returns the response.",
+    "code": "function divideNumbers(num1: number, num2: number): number | string {\n    if(num2 === 0) {\n       return 'Error: Division by zero';\n    }\n    return num1 / num2;\n}"
+  },
+  {
+    "name": "sayHelloWorld",
+    "description": "This function returns the string 'Hello, World!'",
+    "code": "function sayHelloWorld(): string {\n    return 'Hello, World!';\n}\n"
+  },
+  {
+    "name": "getStateCapitals",
+    "description": "This function returns an array of state capitols",
+    "code": "function getStateCapitals(): string[] {\n    const stateCapitals: string[] = ['Austin', 'Atlanta', 'Tallahassee', 'Sacramento', 'Denver'];\n    return stateCapitals;\n}"
   }
 ]

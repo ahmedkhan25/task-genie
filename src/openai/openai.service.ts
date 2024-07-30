@@ -8,7 +8,15 @@ import * as path from 'path';
 interface ChatCompletionRequest {
   model: string;
   messages: Array<{ role: string; content: string }>;
+ // response_format: { type: string };
 }
+
+interface SkillResponse {
+  name: string;
+  description: string;
+  code: string;
+}
+
 
 interface ChatCompletionResponse {
   id: string;
@@ -60,7 +68,9 @@ export class OpenAIService {
 
     const data: ChatCompletionRequest = {
       model: 'gpt-4',
-      messages: [{ role: 'user', content: genie.ActivePrompt }],
+      messages: [
+        { role: 'user', content: genie.ActivePrompt }
+      ]
     };
 
     try {

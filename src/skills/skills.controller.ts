@@ -1,8 +1,24 @@
 import { Controller, Get, Post, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { SkillService } from './skills.service';
 import { AgentService } from './agent.service';
 import { Skill } from './skills.interface';
 
+//for Swagger documentation only
+export class SkillDto implements Skill {
+  @ApiProperty({ example: 'addNumbers', description: 'The name of the skill' })
+  name: string;
+
+  @ApiProperty({ example: 'Adds two numbers', description: 'The description of the skill' })
+  description: string;
+
+  @ApiProperty({ example: 'function addNumbers(a: number, b: number): number { return a + b; }', description: 'The code of the skill' })
+  code: string;
+}
+
+
+@ApiTags('skills')
 @Controller('skills')
 export class SkillController {
   constructor(
@@ -11,21 +27,35 @@ export class SkillController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all skills' })
+  @ApiResponse({ status: 200, description: 'Return all skills.', type: [SkillDto] })
   getAllSkills(): Promise<Skill[]> {
     return this.skillService.getAllSkills();
   }
 
   @Get(':name')
+  @ApiOperation({ summary: 'Get a skill by name' })
+  @ApiParam({ name: 'name', type: 'string' })
+  @ApiResponse({ status: 200, description: 'Return the skill.', type: SkillDto })
+  @ApiResponse({ status: 404, description: 'Skill not found.' })
   getSkill(@Param('name') name: string): Promise<Skill | undefined> {
     return this.skillService.getSkill(name);
   }
 
   @Post()
-  addSkill(@Body() Skill: Skill): Promise<void> {
-    return this.skillService.addSkill(Skill);
+  @ApiOperation({ summary: 'Add a new skill' })
+  @ApiBody({ type: SkillDto })
+  @ApiResponse({ status: 201, description: 'The skill has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  addSkill(@Body() skill: Skill): Promise<void> {
+    return this.skillService.addSkill(skill);
   }
 
   @Post('generate')
+  @ApiOperation({ summary: 'Generate a new skill' })
+  @ApiBody({ schema: { properties: { taskDescription: { type: 'string' } } } })
+  @ApiResponse({ status: 201, description: 'The skill has been successfully generated.' })
+  @ApiResponse({ status: 500, description: 'Skill generation failed.' })
   async generateSkill(@Body('taskDescription') taskDescription: string): Promise<void> {
     try {
       await this.agentService.generateSkill(taskDescription);
@@ -35,6 +65,11 @@ export class SkillController {
   }
 
   @Post(':name/execute')
+  @ApiOperation({ summary: 'Execute a skill' })
+  @ApiParam({ name: 'name', type: 'string' })
+  @ApiResponse({ status: 200, description: 'The skill has been successfully executed.' })
+  @ApiResponse({ status: 404, description: 'Skill not found.' })
+  @ApiResponse({ status: 500, description: 'Skill execution failed.' })
   async executeSkill(@Param('name') name: string): Promise<void> {
     try {
       await this.skillService.executeSkill(name);
