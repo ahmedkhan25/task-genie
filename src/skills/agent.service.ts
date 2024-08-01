@@ -63,22 +63,55 @@ export class AgentService {
   private parseSkillResponse(skillResponse: string): Skill {
     try {
       console.log('skillResponse from GPT is: ', skillResponse);
-      const parsedResponse = JSON.parse(skillResponse);
-      if (Array.isArray(parsedResponse) && parsedResponse.length > 0) {
-        const skillData = parsedResponse[0];
-        const extractedName = this.extractSkillName(skillData.code);
-        return {
-          name: extractedName,
-          description: skillData.description,
-          code: skillData.code,
-        };
+      
+      // Attempt to parse the JSON response
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(skillResponse);
+      } catch (jsonError) {
+        console.error('Error parsing JSON:', jsonError);
+        console.log('Raw response:', skillResponse);
+        throw new Error('Invalid JSON in skill response');
       }
-      throw new Error('Invalid skill response format');
+  
+      // Check if parsedResponse is an array and has at least one element
+      if (!Array.isArray(parsedResponse) || parsedResponse.length === 0) {
+        console.error('Parsed response is not an array or is empty:', parsedResponse);
+        throw new Error('Invalid skill response format: expected non-empty array');
+      }
+  
+      const skillData = parsedResponse[0];
+  
+      // Check if skillData has all required properties
+      if (!skillData.name || !skillData.description || !skillData.code || !Array.isArray(skillData.parameters)) {
+        console.error('skillData is missing required properties:', skillData);
+        throw new Error('Invalid skill data: missing required properties');
+      }
+  
+      // Extract skill name from code if necessary
+      const extractedName = this.extractSkillName(skillData.code);
+      const skillName = extractedName || skillData.name;
+  
+      // Map parameters, providing default values if any property is missing
+      const parameters = skillData.parameters.map(p => ({
+        name: p.name || 'unnamed',
+        type: p.type || 'any',
+        description: p.description || 'No description provided'
+      }));
+  
+      return {
+        name: skillName,
+        description: skillData.description,
+        code: skillData.code,
+        parameters: parameters
+      };
     } catch (error) {
       console.error('Error parsing skill response:', error);
-      throw error;
+      throw new Error(`Failed to parse skill response: ${error.message}`);
     }
   }
+  
+  // Helper function to extract skill name from code
 
   private extractSkillName(code: string): string {
     const functionMatch = code.match(/function\s+(\w+)/);

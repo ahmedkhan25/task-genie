@@ -12,12 +12,27 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SkillController = exports.SkillDto = void 0;
+exports.SkillController = exports.ExecuteSkillDto = exports.SkillDto = exports.ParameterDto = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const swagger_2 = require("@nestjs/swagger");
 const skills_service_1 = require("./skills.service");
 const agent_service_1 = require("./agent.service");
+class ParameterDto {
+}
+exports.ParameterDto = ParameterDto;
+__decorate([
+    (0, swagger_2.ApiProperty)({ example: 'num1', description: 'The name of the parameter' }),
+    __metadata("design:type", String)
+], ParameterDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_2.ApiProperty)({ example: 'number', description: 'The type of the parameter' }),
+    __metadata("design:type", String)
+], ParameterDto.prototype, "type", void 0);
+__decorate([
+    (0, swagger_2.ApiProperty)({ example: 'The first number to add', description: 'The description of the parameter' }),
+    __metadata("design:type", String)
+], ParameterDto.prototype, "description", void 0);
 class SkillDto {
 }
 exports.SkillDto = SkillDto;
@@ -33,6 +48,17 @@ __decorate([
     (0, swagger_2.ApiProperty)({ example: 'function addNumbers(a: number, b: number): number { return a + b; }', description: 'The code of the skill' }),
     __metadata("design:type", String)
 ], SkillDto.prototype, "code", void 0);
+__decorate([
+    (0, swagger_2.ApiProperty)({ type: [ParameterDto], description: 'The parameters of the skill' }),
+    __metadata("design:type", Array)
+], SkillDto.prototype, "parameters", void 0);
+class ExecuteSkillDto {
+}
+exports.ExecuteSkillDto = ExecuteSkillDto;
+__decorate([
+    (0, swagger_2.ApiProperty)({ type: 'array', items: { type: 'any' }, description: 'The parameters to execute the skill with' }),
+    __metadata("design:type", Array)
+], ExecuteSkillDto.prototype, "params", void 0);
 let SkillController = class SkillController {
     constructor(skillService, agentService) {
         this.skillService = skillService;
@@ -41,8 +67,12 @@ let SkillController = class SkillController {
     getAllSkills() {
         return this.skillService.getAllSkills();
     }
-    getSkill(name) {
-        return this.skillService.getSkill(name);
+    async getSkill(name) {
+        const skill = await this.skillService.getSkill(name);
+        if (!skill) {
+            throw new common_1.HttpException('Skill not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        return skill;
     }
     addSkill(skill) {
         return this.skillService.addSkill(skill);
@@ -55,9 +85,9 @@ let SkillController = class SkillController {
             throw new common_1.HttpException('Skill generation failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async executeSkill(name) {
+    async executeSkill(name, executeSkillDto) {
         try {
-            const result = await this.skillService.executeSkill(name);
+            const result = await this.skillService.executeSkill(name, executeSkillDto.params);
             return { result };
         }
         catch (error) {
@@ -114,6 +144,7 @@ __decorate([
     (0, common_1.Post)(':name/execute'),
     (0, swagger_1.ApiOperation)({ summary: 'Execute a skill' }),
     (0, swagger_1.ApiParam)({ name: 'name', type: 'string', description: 'The name of the skill to execute' }),
+    (0, swagger_1.ApiBody)({ type: ExecuteSkillDto }),
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'The skill has been successfully executed.',
@@ -130,8 +161,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Skill not found.' }),
     (0, swagger_1.ApiResponse)({ status: 500, description: 'Skill execution failed.' }),
     __param(0, (0, common_1.Param)('name')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, ExecuteSkillDto]),
     __metadata("design:returntype", Promise)
 ], SkillController.prototype, "executeSkill", null);
 exports.SkillController = SkillController = __decorate([

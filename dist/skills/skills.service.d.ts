@@ -5,7 +5,8 @@ export declare class SkillService {
     getAllSkills(): Promise<Skill[]>;
     getSkill(name: string): Promise<Skill | undefined>;
     addSkill(skill: Skill): Promise<void>;
-    executeSkill(name: string): Promise<any>;
+    executeSkill(name: string, params: any[]): Promise<any>;
+    private validateParameters;
     private readSkillsFromFile;
     private writeSkillsToFile;
     private writeSkillFile;

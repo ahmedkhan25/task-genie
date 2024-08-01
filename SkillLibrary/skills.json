@@ -2,36 +2,104 @@
   {
     "name": "addTwoNumbers",
     "description": "Generate a TypeScript function to accomplish the following task: Create a TypeScript function that takes two numbers as input and returns their sum.",
-    "code": "function addTwoNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}\n"
+    "code": "function addTwoNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}\n",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to add"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The second number to add"
+      }
+    ]
   },
   {
     "name": "addNumbers",
     "description": "This function takes two numbers as input and returns their sum.",
-    "code": "function addNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}"
+    "code": "function addNumbers(num1: number, num2: number): number {\n    return num1 + num2;\n}",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to add"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The second number to add"
+      }
+    ]
   },
   {
     "name": "multiplyNumbers",
     "description": "This function takes two numbers as inputs and returns the product of the two numbers.",
-    "code": "function multiplyNumbers(num1: number, num2: number): number {\n    return num1 * num2;\n}"
+    "code": "function multiplyNumbers(num1: number, num2: number): number {\n    return num1 * num2;\n}",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to multiply"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The second number to multiply"
+      }
+    ]
   },
   {
     "name": "divideNumbers",
     "description": "This function takes two numbers as parameters, divides first number by the second and returns the response.",
-    "code": "function divideNumbers(num1: number, num2: number): number | string {\n    if(num2 === 0) {\n       return 'Error: Division by zero';\n    }\n    return num1 / num2;\n}"
+    "code": "function divideNumbers(num1: number, num2: number): number | string {\n    if(num2 === 0) {\n       return 'Error: Division by zero';\n    }\n    return num1 / num2;\n}",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The dividend (number to be divided)"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The divisor (number to divide by)"
+      }
+    ]
   },
   {
     "name": "sayHelloWorld",
     "description": "This function returns the string 'Hello, World!'",
-    "code": "function sayHelloWorld(): string {\n    return 'Hello, World!';\n}\n"
+    "code": "function sayHelloWorld(): string {\n    return 'Hello, World!';\n}\n",
+    "parameters": []
   },
   {
     "name": "getStateCapitals",
     "description": "This function returns an array of state capitols",
-    "code": "function getStateCapitals(): string[] {\n    const stateCapitals: string[] = ['Austin', 'Atlanta', 'Tallahassee', 'Sacramento', 'Denver'];\n    return stateCapitals;\n}"
+    "code": "function getStateCapitals(): string[] {\n    const stateCapitals: string[] = ['Austin', 'Atlanta', 'Tallahassee', 'Sacramento', 'Denver'];\n    return stateCapitals;\n}",
+    "parameters": []
   },
   {
     "name": "getCatString",
     "description": "This function returns a string that says 'this is a cat'.",
-    "code": "function getCatString(): string {\n    return 'this is a cat';\n}\n"
+    "code": "function getCatString(): string {\n    return 'this is a cat';\n}\n",
+    "parameters": []
+  },
+  {
+    "name": "multiplyNumbers",
+    "description": "This function multiplies two numbers and returns the result.",
+    "code": "function multiplyNumbers(num1: number, num2: number): number {\n    return num1 * num2;\n}\n",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to be multiplied"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The second number to be multiplied"
+      }
+    ]
   }
 ]

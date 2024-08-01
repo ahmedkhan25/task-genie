@@ -39,29 +39,39 @@ let SkillService = class SkillService {
         await this.writeSkillsToFile(skills);
         await this.writeSkillFile(skill);
     }
-    async executeSkill(name) {
+    async executeSkill(name, params) {
         console.log('Trying to execute skill:', name);
         try {
+            const skill = await this.getSkill(name);
+            if (!skill) {
+                throw new Error(`Skill ${name} not found`);
+            }
+            this.validateParameters(skill, params);
             const skillPath = path.join(__dirname, `../../SkillLibrary/${name}.ts`);
             console.log('Skill path:', skillPath);
             const fileContent = await fs_1.promises.readFile(skillPath, 'utf8');
             const result = ts.transpileModule(fileContent, {
                 compilerOptions: { module: ts.ModuleKind.CommonJS }
             });
-            const skillFunction = new Function(`return ${result.outputText}`)();
-            if (typeof skillFunction === 'function') {
-                const executionResult = skillFunction();
-                console.log(`Skill ${name} executed successfully.`);
-                return executionResult;
-            }
-            else {
-                throw new Error('The skill file does not contain a valid function');
-            }
+            const skillFunction = new Function(...skill.parameters.map(p => p.name), `return (${result.outputText})(...arguments)`);
+            const executionResult = skillFunction(...params);
+            console.log(`Skill ${name} executed successfully.`);
+            return executionResult;
         }
         catch (error) {
             console.error('Error executing skill:', error);
             throw new Error(`Failed to execute skill ${name}: ${error.message}`);
         }
+    }
+    validateParameters(skill, params) {
+        if (params.length !== skill.parameters.length) {
+            throw new Error(`Incorrect number of parameters for skill ${skill.name}. Expected ${skill.parameters.length}, got ${params.length}`);
+        }
+        skill.parameters.forEach((param, index) => {
+            if (typeof params[index] !== param.type.toLowerCase()) {
+                throw new Error(`Invalid type for parameter ${param.name}. Expected ${param.type}, got ${typeof params[index]}`);
+            }
+        });
     }
     async readSkillsFromFile() {
         const data = await fs_1.promises.readFile(this.skillsFilePath, 'utf8');

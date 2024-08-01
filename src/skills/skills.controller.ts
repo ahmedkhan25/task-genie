@@ -3,9 +3,20 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/s
 import { ApiProperty } from '@nestjs/swagger';
 import { SkillService } from './skills.service';
 import { AgentService } from './agent.service';
-import { Skill } from './skills.interface';
+import { Skill, Parameter } from './skills.interface';
 
-//for Swagger documentation only
+// For Swagger documentation only
+export class ParameterDto implements Parameter {
+  @ApiProperty({ example: 'num1', description: 'The name of the parameter' })
+  name: string;
+
+  @ApiProperty({ example: 'number', description: 'The type of the parameter' })
+  type: string;
+
+  @ApiProperty({ example: 'The first number to add', description: 'The description of the parameter' })
+  description: string;
+}
+
 export class SkillDto implements Skill {
   @ApiProperty({ example: 'addNumbers', description: 'The name of the skill' })
   name: string;
@@ -15,8 +26,15 @@ export class SkillDto implements Skill {
 
   @ApiProperty({ example: 'function addNumbers(a: number, b: number): number { return a + b; }', description: 'The code of the skill' })
   code: string;
+
+  @ApiProperty({ type: [ParameterDto], description: 'The parameters of the skill' })
+  parameters: Parameter[];
 }
 
+export class ExecuteSkillDto {
+  @ApiProperty({ type: 'array', items: { type: 'any' }, description: 'The parameters to execute the skill with' })
+  params: any[];
+}
 
 @ApiTags('skills')
 @Controller('skills')
@@ -38,8 +56,12 @@ export class SkillController {
   @ApiParam({ name: 'name', type: 'string' })
   @ApiResponse({ status: 200, description: 'Return the skill.', type: SkillDto })
   @ApiResponse({ status: 404, description: 'Skill not found.' })
-  getSkill(@Param('name') name: string): Promise<Skill | undefined> {
-    return this.skillService.getSkill(name);
+  async getSkill(@Param('name') name: string): Promise<Skill> {
+    const skill = await this.skillService.getSkill(name);
+    if (!skill) {
+      throw new HttpException('Skill not found', HttpStatus.NOT_FOUND);
+    }
+    return skill;
   }
 
   @Post()
@@ -67,6 +89,7 @@ export class SkillController {
   @Post(':name/execute')
   @ApiOperation({ summary: 'Execute a skill' })
   @ApiParam({ name: 'name', type: 'string', description: 'The name of the skill to execute' })
+  @ApiBody({ type: ExecuteSkillDto })
   @ApiResponse({ 
     status: 200, 
     description: 'The skill has been successfully executed.',
@@ -82,9 +105,9 @@ export class SkillController {
   })
   @ApiResponse({ status: 404, description: 'Skill not found.' })
   @ApiResponse({ status: 500, description: 'Skill execution failed.' })
-  async executeSkill(@Param('name') name: string): Promise<{ result: any }> {
+  async executeSkill(@Param('name') name: string, @Body() executeSkillDto: ExecuteSkillDto): Promise<{ result: any }> {
     try {
-      const result = await this.skillService.executeSkill(name);
+      const result = await this.skillService.executeSkill(name, executeSkillDto.params);
       return { result };
     } catch (error) {
       if (error.message.includes('not found')) {
@@ -93,5 +116,4 @@ export class SkillController {
       throw new HttpException(`Skill execution failed: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
 }
