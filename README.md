@@ -49,6 +49,142 @@ http://localhost:3000/api
 
 This provides an interactive interface to explore and test the API endpoints.
 
+# Task-Genie API Documentation
+
+## Overview
+
+Task-Genie is a REST API that allows users to generate and execute AI-powered skills. This document outlines the key endpoints and their usage.
+
+- **Deployment URL**: https://task-genie.onrender.com/
+
+## Endpoints
+
+### 1. Get All Skills
+
+Retrieves a list of all available skills.
+
+- **URL**: `/skills`
+- **Method**: GET
+- **Headers**: 
+  - Accept: application/json
+
+#### Example Request
+
+```bash
+curl -X 'GET' \
+  'https://task-genie.onrender.com/skills' \
+  -H 'accept: application/json'
+```
+
+#### Example Response
+
+```json
+[
+  {
+    "name": "multiplyNumbers",
+    "description": "This function takes two numbers as inputs and returns the product of the two numbers.",
+    "code": "function multiplyNumbers(num1: number, num2: number): number {\n    return num1 * num2;\n}",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to multiply"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The second number to multiply"
+      }
+    ]
+  },
+  {
+    "name": "divideNumbers",
+    "description": "This function takes two numbers as parameters, divides first number by the second and returns the response.",
+    "code": "function divideNumbers(num1: number, num2: number): number | string {\n    if(num2 === 0) {\n       return 'Error: Division by zero';\n    }\n    return num1 / num2;\n}",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The dividend (number to be divided)"
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The divisor (number to divide by)"
+      }
+    ]
+  },
+  {
+    "name": "sayHelloWorld",
+    "description": "This function returns the string 'Hello, World!'",
+    "code": "function sayHelloWorld(): string {\n    return 'Hello, World!';\n}\n",
+    "parameters": []
+  }
+]
+```
+
+### 2. Generate a New Skill
+
+Generates a new skill based on the user's definition.
+
+- **URL**: `/skills/generate` (assumed, not specified in the provided documentation)
+- **Method**: POST
+- **Headers**: 
+  - Accept: application/json
+  - Content-Type: application/json
+
+#### Request Body
+
+```json
+{
+  "description": "A description of the skill you want to generate"
+}
+```
+
+**Note**: The exact structure of the request body for generating a new skill was not provided in the original documentation. This is an assumed structure and may need to be adjusted based on the actual API implementation.
+
+### 3. Execute a Skill
+
+Executes a specific skill with provided parameters.
+
+- **URL**: `/skills/{skillName}/execute`
+- **Method**: POST
+- **Headers**: 
+  - Accept: application/json
+  - Content-Type: application/json
+
+#### Example Request
+
+```bash
+curl -X 'POST' \
+  'https://task-genie.onrender.com/skills/multiplyNumbers/execute' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "params": [20, 2]
+}'
+```
+
+#### Example Response
+
+```json
+{
+  "result": 40
+}
+```
+
+## UI Integration
+
+To integrate with a chat-based front end:
+
+1. Use the "Get All Skills" endpoint to populate a list of available skills for the user to choose from.
+2. Implement a chat interface where users can input descriptions for new skills.
+3. Use the "Generate a New Skill" endpoint to create new skills based on user input.
+4. When a user selects a skill to execute, use the "Execute a Skill" endpoint, passing any required parameters.
+5. Display the result of the skill execution in the chat interface.
+
+Remember to handle errors gracefully and provide clear feedback to the user throughout the process.
+
 ## Project Status
 
 This project is in its early stages and is continuously evolving. As a POC, it may contain experimental features and is not yet optimized for performance or security in a production environment.
