@@ -15,6 +15,11 @@ interface SkillResponse {
   name: string;
   description: string;
   code: string;
+  parameters: Array<{
+    name: string;
+    type: string;
+    description: string;
+  }>;
 }
 
 
