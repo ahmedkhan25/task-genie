@@ -38,5 +38,22 @@
     "description": "This function returns the string 'Hello, World!'",
     "code": "function sayHelloWorld(): string {\n    return 'Hello, World!';\n}\n",
     "parameters": []
+  },
+  {
+    "name": "subtractNumbers",
+    "description": "This function subtracts two numbers and returns the result.",
+    "code": "function subtractNumbers(num1: number, num2: number): number {\n    return num1 - num2;\n}\n",
+    "parameters": [
+      {
+        "name": "num1",
+        "type": "number",
+        "description": "The first number to be subtracted from."
+      },
+      {
+        "name": "num2",
+        "type": "number",
+        "description": "The number to subtract from the first number."
+      }
+    ]
   }
 ]

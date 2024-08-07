@@ -1,0 +1,19 @@
+{
+    "name": "task-genie-frontend",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test"
+    },
+    "dependencies": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.0",
+      "@types/react-dom": "^18.2.0",
+      "react-scripts": "5.0.1"
+    }
+  }
